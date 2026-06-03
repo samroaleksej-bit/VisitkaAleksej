@@ -1,0 +1,634 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Suhoe DnD | Мастер настольных ролевых игр</title>
+  <meta name="description" content="Мастер D&D, Cyberpunk, Witcher. Ваншоты и кампании на Foundry VTT. Участник CircleOfDms.">
+  
+  <!-- Настройки для красивого отображения ссылки в соцсетях -->
+  <meta property="og:title" content="Suhoe DnD - Мастер НРИ">
+  <meta property="og:description" content="Профессиональный мастер D&D. Ваншоты, кампании, Foundry VTT.">
+  <meta property="og:type" content="website">
+  
+  <style>
+    :root {
+      --bg-dark: #0a0514;
+      --bg-card: #1a0f2e;
+      --bg-card-hover: #241642;
+      --accent: #a855f7;
+      --accent-hover: #9333ea;
+      --accent-glow: rgba(168, 85, 247, 0.4);
+      --text: #f5f3ff;
+      --text-muted: #c4b5fd;
+      --border: #3f2a66;
+      --gold: #fbbf24;
+      --pink: #ec4899;
+      --cyan: #22d3ee;
+      --radius: 16px;
+      --transition: 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    }
+    
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+    html { scroll-behavior: smooth; }
+    
+    body {
+      font-family: 'Segoe UI', system-ui, -apple-system, sans-serif;
+      background: var(--bg-dark);
+      color: var(--text);
+      line-height: 1.6;
+      background-image: 
+        radial-gradient(ellipse at top, #2e1065 0%, transparent 70%),
+        radial-gradient(ellipse at bottom, #4c1d95 0%, transparent 70%),
+        radial-gradient(circle at 20% 80%, var(--accent-glow) 0%, transparent 40%),
+        radial-gradient(circle at 80% 20%, rgba(236, 72, 153, 0.25) 0%, transparent 40%);
+      background-attachment: fixed;
+      overflow-x: hidden;
+      min-height: 100vh;
+    }
+    
+    .container { max-width: 1100px; margin: 0 auto; padding: 0 20px; }
+    
+    header {
+      padding: 16px 0;
+      border-bottom: 1px solid var(--border);
+      position: sticky;
+      top: 0;
+      background: rgba(10, 5, 20, 0.95);
+      backdrop-filter: blur(12px);
+      z-index: 100;
+      box-shadow: 0 4px 30px rgba(168, 85, 247, 0.15);
+    }
+    .header-content { display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 15px; }
+    .logo {
+      font-size: 1.4rem; font-weight: 800; color: var(--accent); text-decoration: none;
+      display: flex; align-items: center; gap: 8px; text-shadow: 0 0 15px var(--accent-glow);
+    }
+    .logo-icon { font-size: 1.6rem; animation: float 4s ease-in-out infinite; }
+    @keyframes float { 0%, 100% { transform: translateY(0); } 50% { transform: translateY(-5px); } }
+    
+    nav { display: flex; gap: 18px; flex-wrap: wrap; }
+    nav a {
+      color: var(--text); text-decoration: none; font-weight: 500; transition: var(--transition);
+      position: relative; padding: 4px 0; font-size: 0.95rem;
+    }
+    nav a:hover { color: var(--accent); text-shadow: 0 0 12px var(--accent-glow); }
+    nav a::after {
+      content: ''; position: absolute; bottom: -2px; left: 0; width: 0; height: 2px;
+      background: var(--accent); transition: width 0.3s ease;
+    }
+    nav a:hover::after { width: 100%; }
+    
+    .hero { padding: 80px 0 60px; text-align: center; position: relative; overflow: hidden; }
+    .hero::before {
+      content: '🎲'; position: absolute; font-size: 14rem; opacity: 0.05; top: 50%; left: 50%;
+      transform: translate(-50%, -50%) rotate(-15deg); pointer-events: none; animation: float 8s ease-in-out infinite;
+    }
+    .hero h1 {
+      font-size: clamp(2.2rem, 5vw, 3.2rem); margin-bottom: 16px;
+      background: linear-gradient(135deg, var(--accent), var(--pink), var(--cyan));
+      -webkit-background-clip: text; -webkit-text-fill-color: transparent;
+      background-size: 200% 200%; animation: gradient 6s ease infinite;
+    }
+    @keyframes gradient { 0%, 100% { background-position: 0% 50%; } 50% { background-position: 100% 50%; } }
+    .hero p { font-size: 1.2rem; color: var(--text-muted); max-width: 650px; margin: 0 auto 32px; }
+    
+    .cta-buttons { display: flex; gap: 16px; justify-content: center; flex-wrap: wrap; }
+    .btn {
+      padding: 14px 28px; border-radius: 12px; font-weight: 600; text-decoration: none;
+      transition: var(--transition); display: inline-flex; align-items: center; gap: 8px;
+      border: none; cursor: pointer; font-size: 1rem; position: relative; overflow: hidden;
+    }
+    .btn::before {
+      content: ''; position: absolute; top: 0; left: -100%; width: 100%; height: 100%;
+      background: linear-gradient(90deg, transparent, rgba(255,255,255,0.2), transparent); transition: left 0.5s;
+    }
+    .btn:hover::before { left: 100%; }
+    .btn-primary {
+      background: linear-gradient(135deg, var(--accent), var(--accent-hover)); color: white;
+      box-shadow: 0 4px 20px var(--accent-glow);
+    }
+    .btn-primary:hover { transform: translateY(-2px); box-shadow: 0 8px 30px var(--accent-glow); }
+    .btn-outline {
+      background: transparent; border: 2px solid var(--border); color: var(--text);
+    }
+    .btn-outline:hover { border-color: var(--accent); color: var(--accent); box-shadow: 0 0 20px var(--accent-glow); }
+    
+    section { padding: 60px 0; }
+    .section-title {
+      text-align: center; font-size: 2rem; margin-bottom: 40px; position: relative; color: var(--text);
+    }
+    .section-title::after {
+      content: ''; position: absolute; bottom: -12px; left: 50%; transform: translateX(-50%);
+      width: 60px; height: 3px; background: linear-gradient(90deg, var(--accent), var(--pink));
+      border-radius: 2px; box-shadow: 0 0 10px var(--accent-glow);
+    }
+    .section-subtitle { text-align: center; color: var(--text-muted); margin: -30px auto 30px; max-width: 700px; }
+    
+    .grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(260px, 1fr)); gap: 24px; }
+    
+    .card {
+      background: var(--bg-card); border: 1px solid var(--border); border-radius: var(--radius);
+      padding: 24px; transition: var(--transition); position: relative; overflow: hidden;
+      display: flex; flex-direction: column;
+    }
+    .card:hover { 
+      transform: translateY(-6px); border-color: var(--accent); 
+      box-shadow: 0 12px 40px rgba(168, 85, 247, 0.25); background: var(--bg-card-hover);
+    }
+    .card h3 { margin: 12px 0; color: var(--accent); display: flex; align-items: center; gap: 10px; font-size: 1.25rem; }
+    .card ul { margin-top: auto; padding-top: 15px; border-top: 1px solid var(--border); }
+    
+    .system-card { text-align: center; padding: 20px !important; align-items: center; }
+    .system-icon { font-size: 2.5rem; margin-bottom: 10px; }
+    .system-card h3 { justify-content: center; color: var(--text); margin-bottom: 4px; }
+    .system-card p { font-size: 0.9rem; color: var(--text-muted); }
+    
+    .reviews-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 20px; }
+    .review-card {
+      background: var(--bg-card); border: 1px solid var(--border); border-radius: var(--radius);
+      padding: 20px; transition: var(--transition); cursor: pointer; text-decoration: none; color: inherit; display: block;
+    }
+    .review-card:hover { transform: translateY(-4px); border-color: var(--accent); box-shadow: 0 8px 30px rgba(168, 85, 247, 0.25); }
+    .review-header { display: flex; align-items: center; gap: 12px; margin-bottom: 12px; }
+    .review-avatar {
+      width: 42px; height: 42px; border-radius: 50%; display: flex; align-items: center; justify-content: center;
+      font-weight: bold; font-size: 1.1rem; flex-shrink: 0; color: white; text-shadow: 0 1px 2px rgba(0,0,0,0.5);
+    }
+    .review-meta { flex: 1; }
+    .review-author { font-weight: 600; color: var(--accent); font-size: 1rem; }
+    .review-date { font-size: 0.85rem; color: var(--text-muted); }
+    .review-text { color: var(--text); line-height: 1.5; margin-bottom: 12px; font-style: italic; }
+    .review-link { display: inline-flex; align-items: center; gap: 6px; color: var(--cyan); font-size: 0.9rem; font-weight: 500; transition: color 0.2s; }
+    .review-link:hover { color: var(--accent); }
+    
+    .pricing-section { margin-bottom: 60px; }
+    .pricing-subtitle { text-align: center; color: var(--text-muted); margin-bottom: 30px; font-size: 1.1rem; }
+    .price-tag { font-size: 2rem; font-weight: 800; color: var(--gold); margin: 16px 0; text-shadow: 0 0 20px rgba(251, 191, 36, 0.3); }
+    .price-note { font-size: 0.85rem; color: var(--text-muted); margin-top: -10px; margin-bottom: 10px; display: block; }
+    .tier-featured { border-color: var(--pink); background: linear-gradient(145deg, #241642, #1a0f2e); box-shadow: 0 0 20px rgba(236, 72, 153, 0.15); }
+    .tier-featured::before {
+      content: ' ТОП'; position: absolute; top: -1px; right: 20px; background: var(--pink);
+      color: white; padding: 4px 12px; border-radius: 0 0 10px 10px; font-size: 0.8rem; font-weight: bold;
+    }
+    .note-box {
+      background: rgba(168, 85, 247, 0.1); border: 1px dashed var(--accent); padding: 20px;
+      border-radius: var(--radius); text-align: center; margin-top: 40px; color: var(--text-muted);
+    }
+
+    .promo-category-title {
+      color: var(--pink); margin: 40px 0 20px; display:flex; align-items:center; gap:10px; font-size: 1.5rem;
+    }
+    .promo-category-title:nth-of-type(2) { color: var(--gold); }
+    .promo-category-title:nth-of-type(3) { color: var(--cyan); }
+    
+    .promo-card { 
+      position: relative; 
+      padding-top: 70px; 
+      text-align: center; 
+    }
+    
+    .discount-badge {
+      position: absolute; 
+      top: 14px; 
+      left: 50%; 
+      transform: translateX(-50%);
+      background: linear-gradient(135deg, #ff006e, #ff4d00); 
+      color: white;
+      font-weight: 900; 
+      font-size: 1.3rem; 
+      padding: 8px 22px; 
+      border-radius: 30px;
+      box-shadow: 
+        0 6px 25px rgba(255, 0, 110, 0.8),
+        0 0 0 4px rgba(255, 255, 255, 0.15),
+        0 0 30px rgba(255, 77, 0, 0.5);
+      white-space: nowrap; 
+      z-index: 2;
+      text-shadow: 0 2px 6px rgba(0,0,0,0.4);
+      letter-spacing: 1px;
+      border: 3px solid rgba(255,255,255,0.3);
+      animation: pulse-glow 2s ease-in-out infinite;
+    }
+
+    @keyframes pulse-glow {
+      0%, 100% { 
+        box-shadow: 0 6px 25px rgba(255, 0, 110, 0.8), 0 0 0 4px rgba(255, 255, 255, 0.15); 
+      }
+      50% { 
+        box-shadow: 0 8px 35px rgba(255, 0, 110, 1), 0 0 0 6px rgba(255, 255, 255, 0.25); 
+      }
+    }
+    
+    .promo-card h3 { color: var(--text); margin-bottom: 10px; justify-content: center; }
+    .promo-card p { font-size: 0.95rem; color: var(--text-muted); }
+
+    .contact-links { display: flex; flex-direction: column; align-items: center; gap: 16px; }
+    .telegram-link {
+      display: inline-flex; align-items: center; gap: 10px; font-size: 1.1rem; color: white;
+      text-decoration: none; padding: 14px 28px; background: linear-gradient(135deg, #229ED9, #1a8bc2);
+      border-radius: 12px; font-weight: 600; transition: var(--transition);
+      box-shadow: 0 4px 20px rgba(34, 158, 217, 0.3);
+    }
+    .telegram-link:hover { transform: translateY(-2px); box-shadow: 0 8px 30px rgba(34, 158, 217, 0.5); }
+    
+    footer { text-align: center; padding: 30px 0; border-top: 1px solid var(--border); color: var(--text-muted); font-size: 0.95rem; }
+    
+    @media (max-width: 768px) {
+      .header-content { flex-direction: column; gap: 16px; }
+      nav { justify-content: center; gap: 12px; }
+      .hero { padding: 60px 0 40px; }
+      .cta-buttons { flex-direction: column; align-items: center; }
+      .btn { width: 100%; max-width: 300px; justify-content: center; }
+      .promo-card { padding-top: 75px; }
+      .discount-badge { font-size: 1.1rem; padding: 6px 18px; top: 12px; }
+    }
+  </style>
+</head>
+<body>
+
+  <header>
+    <div class="container header-content">
+      <a href="#" class="logo">
+        <span class="logo-icon">🎲</span>
+        Suhoe DnD
+      </a>
+      <nav>
+        <a href="#about">Обо мне</a>
+        <a href="#format">Формат</a>
+        <a href="#systems">Системы</a>
+        <a href="#reviews">Отзывы</a>
+        <a href="#pricing">Цены</a>
+        <a href="#promos">Акции</a>
+        <a href="#contact">Контакты</a>
+      </nav>
+    </div>
+  </header>
+
+  <section class="hero">
+    <div class="container">
+      <h1>✨ Магия начинается здесь</h1>
+      <p>Профессиональный мастер НРИ. Создаю миры на Foundry VTT, где каждый бросок кубика меняет судьбу. Участник проекта CircleOfDms.</p>
+      <div class="cta-buttons">
+        <a href="https://t.me/Suhoe_DnD" class="btn btn-primary" target="_blank" rel="noopener noreferrer">
+          📢 Мой канал в Telegram
+        </a>
+        <a href="#contact" class="btn btn-outline">
+          ✍️ Записаться на игру
+        </a>
+      </div>
+    </div>
+  </section>
+
+  <section id="about">
+    <div class="container">
+      <h2 class="section-title">🗡️ Обо мне</h2>
+      <div class="grid">
+        <div class="card">
+          <h3><span class="card-icon">🤝</span> CircleOfDms</h3>
+          <p>Являюсь частью сообщества мастеров <strong>CircleOfDms</strong>. Это гарантирует высокий стандарт качества, обмен опытом и поддержку лучших практик в ведении игр.</p>
+        </div>
+        <div class="card">
+          <h3><span class="card-icon">🎭</span> Стиль игры</h3>
+          <p>Баланс между эпическими битвами и глубоким отыгрышем. Мир реагирует на ваши действия, никаких «рельсов» — только живая история, где решения игроков меняют ход событий.</p>
+        </div>
+        <div class="card">
+          <h3><span class="card-icon">📚</span> Подготовка</h3>
+          <p>Прорисованные карты, подобранный саундтрек и проработанные NPC. Я уделяю внимание деталям, чтобы вы чувствовали себя внутри мира, а не просто читали текст.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section id="format" style="background: rgba(26,15,46,0.7);">
+    <div class="container">
+      <h2 class="section-title">🛠 Как мы играем</h2>
+      <div class="grid" style="grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));">
+        <div class="card system-card">
+          <div class="system-icon">💬</div>
+          <h3>Связь и общение</h3>
+          <p>Основная площадка для голосовой связи и координации:</p>
+          <div style="margin-top:15px;">
+            <span style="display:inline-block; background:rgba(88,101,242,0.2); color:#5865F2; border:1px solid #5865F2; padding:6px 12px; border-radius:8px; margin:4px; font-size:0.9rem;">Discord</span>
+            <span style="display:inline-block; background:rgba(0,0,0,0.2); color:#fff; border:1px solid #333; padding:6px 12px; border-radius:8px; margin:4px; font-size:0.9rem;">Steam</span>
+            <span style="display:inline-block; background:rgba(255,204,0,0.15); color:#FFCC00; border:1px solid #FFCC00; padding:6px 12px; border-radius:8px; margin:4px; font-size:0.9rem;">Яндекс.Телемост</span>
+            <span style="display:inline-block; background:rgba(0,128,0,0.15); color:#4CAF50; border:1px solid #4CAF50; padding:6px 12px; border-radius:8px; margin:4px; font-size:0.9rem;">Google Meet</span>
+          </div>
+        </div>
+        <div class="card system-card">
+          <div class="system-icon">🗺️</div>
+          <h3>Виртуальные столы (VTT)</h3>
+          <p>Используем передовые платформы для максимального погружения:</p>
+          <div style="margin-top:15px;">
+            <span style="display:inline-block; background:rgba(168,85,247,0.2); color:var(--accent); border:1px solid var(--accent); padding:6px 12px; border-radius:8px; margin:4px; font-size:0.9rem;">Foundry VTT</span>
+            <span style="display:inline-block; background:rgba(168,85,247,0.2); color:var(--accent); border:1px solid var(--accent); padding:6px 12px; border-radius:8px; margin:4px; font-size:0.9rem;">Alchemy VTT</span>
+          </div>
+          <p style="margin-top: 15px; font-size: 0.9rem;">Можем рассмотреть другие платформы по вашему желанию.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section id="systems">
+    <div class="container">
+      <h2 class="section-title">🎮 Игровые системы</h2>
+      <p class="section-subtitle">Выбирай мир, в который хочешь отправиться. По всем системам провожу как ваншоты, так и кампании.</p>
+      <div class="grid" style="grid-template-columns: repeat(auto-fit, minmax(160px, 1fr));">
+        <div class="card system-card">
+          <div class="system-icon"></div>
+          <h3>D&D 5e</h3>
+          <p>Классика жанра</p>
+        </div>
+        <div class="card system-card">
+          <div class="system-icon">🐉</div>
+          <h3>D&D 2024</h3>
+          <p>Новые правила PHB</p>
+        </div>
+        <div class="card system-card">
+          <div class="system-icon">🌍</div>
+          <h3>Fabula Ultima</h3>
+          <p>JRPG стиль</p>
+        </div>
+        <div class="card system-card">
+          <div class="system-icon">🦾</div>
+          <h3>Cyberpunk</h3>
+          <p>Red/2020</p>
+        </div>
+        <div class="card system-card">
+          <div class="system-icon">⚔️</div>
+          <h3>The Witcher</h3>
+          <p>Монстры и магия</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section id="reviews" style="background: rgba(26,15,46,0.5);">
+    <div class="container">
+      <h2 class="section-title">💬 Живые отзывы</h2>
+      <p class="section-subtitle">Реальные истории от игроков — кликайте, чтобы прочитать в Telegram 👇</p>
+      
+      <div class="reviews-grid">
+        <a href="https://t.me/verlierboyreviev" class="review-card" target="_blank" rel="noopener noreferrer">
+          <div class="review-header">
+            <div class="review-avatar" style="background: linear-gradient(135deg, #ec4899, #f59e0b);">К</div>
+            <div class="review-meta"><div class="review-author">Карина ⭐⭐⭐⭐⭐</div><div class="review-date">12 февраля 2026</div></div>
+          </div>
+          <p class="review-text">«Это был офигенный ваншот 🔥 Атмосфера, сюжет, боевка, отыгрыш мастера - все было на высшем уровне.»</p>
+          <span class="review-link">Читать в Telegram →</span>
+        </a>
+        <a href="https://t.me/verlierboyreviev" class="review-card" target="_blank" rel="noopener noreferrer">
+          <div class="review-header">
+            <div class="review-avatar" style="background: linear-gradient(135deg, #22d3ee, #3b82f6);">К</div>
+            <div class="review-meta"><div class="review-author">Кит ⭐⭐⭐⭐⭐</div><div class="review-date">17 января 2026</div></div>
+          </div>
+          <p class="review-text">«Очень душевно сыграли ваншот, мастер ответственный, организованный)) классно повел историю, всем дал возможность раскрыться!»</p>
+          <span class="review-link">Читать в Telegram →</span>
+        </a>
+        <a href="https://t.me/verlierboyreviev" class="review-card" target="_blank" rel="noopener noreferrer">
+          <div class="review-header">
+            <div class="review-avatar" style="background: linear-gradient(135deg, #a855f7, #ec4899);">Т</div>
+            <div class="review-meta"><div class="review-author">@Imaginationforever</div><div class="review-date">24 марта 2026</div></div>
+          </div>
+          <p class="review-text">«Невероятная история с уникальным погружением в азиатскую атмосферу. Леша, как всегда, угадывает с музыкой на все 100%. Это просто нечто…»</p>
+          <span class="review-link">Читать в Telegram →</span>
+        </a>
+        <a href="https://t.me/verlierboyreviev" class="review-card" target="_blank" rel="noopener noreferrer">
+          <div class="review-header">
+            <div class="review-avatar" style="background: linear-gradient(135deg, #f59e0b, #ef4444);">М</div>
+            <div class="review-meta"><div class="review-author">@Wit6o</div><div class="review-date">27 февраля 2026</div></div>
+          </div>
+          <p class="review-text">«Это был незабываемый опыт! Отрыгрыш мастера был на высшем уровне! Музыка, сцены, описание, карты — всё вылизано и продумано до мелочей.»</p>
+          <span class="review-link">Читать в Telegram →</span>
+        </a>
+        <a href="https://t.me/verlierboyreviev" class="review-card" target="_blank" rel="noopener noreferrer">
+          <div class="review-header">
+            <div class="review-avatar" style="background: linear-gradient(135deg, #10b981, #22d3ee);">А</div>
+            <div class="review-meta"><div class="review-author">@AleksisBel</div><div class="review-date">22 февраля 2026</div></div>
+          </div>
+          <p class="review-text">«Это было определённо очень анимешно! 12 сенсеев из 10 мастеру 🤗 Система интуитивная, боевка динамичная.»</p>
+          <span class="review-link">Читать в Telegram →</span>
+        </a>
+        <a href="https://t.me/verlierboyreviev" class="review-card" target="_blank" rel="noopener noreferrer">
+          <div class="review-header">
+            <div class="review-avatar" style="background: linear-gradient(135deg, #8b5cf6, #ec4899);">R</div>
+            <div class="review-meta"><div class="review-author">Rem ⭐⭐⭐⭐</div><div class="review-date">26 марта 2025</div></div>
+          </div>
+          <p class="review-text">«Мастер - моё почтение. Подготовка к игре 100 прорисованных карт из 10. Музыка, лор, карты, NPC, отыгрыш - все на высшем уровне.»</p>
+          <span class="review-link">Читать в Telegram →</span>
+        </a>
+      </div>
+      
+      <div style="text-align:center; margin-top:32px; display:flex; gap:16px; justify-content:center; flex-wrap:wrap;">
+        <a href="https://t.me/verlierboyreviev" class="btn btn-outline" target="_blank" rel="noopener noreferrer">📢 Все отзывы в канале</a>
+        <a href="https://t.me/+GDQKYWo6ruIxNzZi" class="btn btn-outline" target="_blank" rel="noopener noreferrer">💬 Чат игроков</a>
+      </div>
+    </div>
+  </section>
+
+  <section id="pricing">
+    <div class="container">
+      <h2 class="section-title">💰 Стоимость</h2>
+
+      <div class="pricing-section">
+        <h3 style="text-align:center; color:var(--pink); font-size:1.5rem; margin-bottom:10px;"> Ваншоты (Разовые игры)</h3>
+        <p class="pricing-subtitle">Завершённая история за одну сессию.</p>
+        <div class="grid">
+          <div class="card">
+            <h3>🌱 Набор "Я новичок"</h3>
+            <div class="price-tag">750 ₽ <span style="font-size: 1rem; color: var(--text-muted); font-weight: normal;">/ чел</span></div>
+            <ul style="list-style: none; padding: 0; color: var(--text);">
+              <li style="margin-bottom: 8px;">✅ Базовые карты и сценарий</li>
+              <li style="margin-bottom: 8px;">✅ Небольшая, но увлекательная история</li>
+              <li style="margin-bottom: 8px;">✅ Длительность: <strong>3-4 часа</strong></li>
+              <li style="margin-bottom: 8px;">✅ Помощь с созданием персонажа</li>
+            </ul>
+            <a href="#contact" class="btn btn-outline" style="margin-top: 20px; justify-content: center;">Записаться</a>
+          </div>
+          <div class="card tier-featured">
+            <h3>🔥 Набор "Я бывалый"</h3>
+            <div class="price-tag">1 250 ₽ <span style="font-size: 1rem; color: var(--text-muted); font-weight: normal;">/ чел</span></div>
+            <ul style="list-style: none; padding: 0; color: var(--text);">
+              <li style="margin-bottom: 8px;">✅ Ваши персонажи вплетены в сюжет</li>
+              <li style="margin-bottom: 8px;">✅ Продвинутые механики Foundry VTT</li>
+              <li style="margin-bottom: 8px;">✅ Длительность: <strong>3-4 часа</strong></li>
+              <li style="margin-bottom: 8px;">✅ Глубокая атмосфера</li>
+            </ul>
+            <a href="#contact" class="btn btn-primary" style="margin-top: 20px; justify-content: center;">Записаться</a>
+          </div>
+          <div class="card">
+            <h3>👑 Набор "Хочу всего!"</h3>
+            <div class="price-tag">1 750 ₽ <span style="font-size: 1rem; color: var(--text-muted); font-weight: normal;">/ чел</span></div>
+            <ul style="list-style: none; padding: 0; color: var(--text);">
+              <li style="margin-bottom: 8px;">✅ Большая «Нулевая сессия» перед игрой</li>
+              <li style="margin-bottom: 8px;">✅ Сюжет пишется специально для вас</li>
+              <li style="margin-bottom: 8px;">✅ Длительность: <strong>4-6 часов</strong></li>
+              <li style="margin-bottom: 8px;">✅ Мини-приключение вашей мечты</li>
+            </ul>
+            <a href="#contact" class="btn btn-outline" style="margin-top: 20px; justify-content: center;">Обсудить</a>
+          </div>
+        </div>
+      </div>
+
+      <div class="pricing-section">
+        <h3 style="text-align:center; color:var(--cyan); font-size:1.5rem; margin-bottom:10px;">📚 Кампании (Долгосрочные)</h3>
+        <p class="pricing-subtitle">Глубокое развитие персонажей и эпические сюжетные арки.</p>
+        <div class="grid">
+          
+          <div class="card">
+            <h3>📜 Мини-кампейн</h3>
+            <div class="price-tag">500 ₽ <span style="font-size: 0.95rem; color: var(--text-muted); font-weight: normal;">/ сессия</span></div>
+            <p style="color: var(--gold); font-size: 0.85rem; margin: 2px 0 8px;">при оплате всех сессий за месяц</p>
+            <div style="background: rgba(168,85,247,0.1); border-radius: 10px; padding: 10px; margin-bottom: 12px;">
+              <p style="color: var(--accent); font-weight: 700; font-size: 0.95rem; margin: 0;">💰 Экономия 250 ₽/сессия!</p>
+              <p style="color: var(--text-muted); font-size: 0.8rem; margin: 2px 0 0;">Обычная цена: 750 ₽ при оплате еженедельно</p>
+            </div>
+            <ul style="list-style: none; padding: 0; color: var(--text);">
+              <li style="margin-bottom: 8px;">✅ 3-4 левелапа (до 8 ур.)</li>
+              <li style="margin-bottom: 8px;">✅ Длительность: <strong>3-4 месяца</strong></li>
+              <li style="margin-bottom: 8px;">✅ Локальная история героев</li>
+            </ul>
+            <a href="#contact" class="btn btn-outline" style="margin-top: 20px; justify-content: center;">Начать путь</a>
+          </div>
+
+          <div class="card">
+            <h3>🏰 Средний-кампейн</h3>
+            <div class="price-tag">1 000 ₽ <span style="font-size: 0.95rem; color: var(--text-muted); font-weight: normal;">/ сессия</span></div>
+            <p style="color: var(--gold); font-size: 0.85rem; margin: 2px 0 8px;">при оплате всех сессий за месяц</p>
+            <div style="background: rgba(168,85,247,0.1); border-radius: 10px; padding: 10px; margin-bottom: 12px;">
+              <p style="color: var(--accent); font-weight: 700; font-size: 0.95rem; margin: 0;">💰 Экономия 250 ₽/сессия!</p>
+              <p style="color: var(--text-muted); font-size: 0.8rem; margin: 2px 0 0;">Обычная цена: 1 250 ₽ при оплате еженедельно</p>
+            </div>
+            <ul style="list-style: none; padding: 0; color: var(--text);">
+              <li style="margin-bottom: 8px;">✅ До 10 левелапов (до 15 ур.)</li>
+              <li style="margin-bottom: 8px;">✅ Длительность: <strong>6+ месяцев</strong></li>
+              <li style="margin-bottom: 8px;">✅ Несколько сюжетных актов</li>
+            </ul>
+            <a href="#contact" class="btn btn-outline" style="margin-top: 20px; justify-content: center;">Начать путь</a>
+          </div>
+
+          <div class="card">
+            <h3>🌌 Мега-кампейн</h3>
+            <div class="price-tag">1 500 ₽ <span style="font-size: 0.95rem; color: var(--text-muted); font-weight: normal;">/ сессия</span></div>
+            <p style="color: var(--gold); font-size: 0.85rem; margin: 2px 0 8px;">при оплате всех сессий за месяц</p>
+            <div style="background: rgba(168,85,247,0.1); border-radius: 10px; padding: 10px; margin-bottom: 12px;">
+              <p style="color: var(--accent); font-weight: 700; font-size: 0.95rem; margin: 0;">💰 Экономия 250 ₽/сессия!</p>
+              <p style="color: var(--text-muted); font-size: 0.8rem; margin: 2px 0 0;">Обычная цена: 1 750 ₽ при оплате еженедельно</p>
+            </div>
+            <ul style="list-style: none; padding: 0; color: var(--text);">
+              <li style="margin-bottom: 8px;">✅ Полный путь (напр. с 1-20 уровня)</li>
+              <li style="margin-bottom: 8px;">✅ Станьте легендой Эластрии</li>
+              <li style="margin-bottom: 8px;">✅ Индивидуальный сюжет под вас</li>
+            </ul>
+            <a href="#contact" class="btn btn-outline" style="margin-top: 20px; justify-content: center;">Начать путь</a>
+          </div>
+
+        </div>
+      </div>
+
+      <div class="note-box">
+        <strong>🎲 Поддерживаемые системы:</strong><br>
+        D&D 5e, D&D 2024, Fabula Ultima, Cyberpunk Red/2020, The Witcher<br>
+        <span style="font-size: 0.9rem; margin-top: 8px; display: block;">
+          По всем системам провожу как ваншоты, так и кампании. Стоимость указана для D&D, для других систем — обсуждается индивидуально.
+        </span>
+      </div>
+    </div>
+  </section>
+
+  <section id="promos" style="background: rgba(26,15,46,0.6);">
+    <div class="container">
+      <h2 class="section-title">🔥 Акции и скидки</h2>
+      
+      <h3 class="promo-category-title"><span></span> Новые авантюристы</h3>
+      <div class="grid" style="grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));">
+        <div class="card promo-card">
+          <div class="discount-badge">-40%</div>
+          <h3>Первая Кровь</h3>
+          <p>Никогда не играл у меня? Первый ваншот — скидка 40%. Персонаж выдаётся готовый, опыт не нужен. Просто приходи и бросай кубики. Понравится — следующая игра уже по обычной цене.</p>
+        </div>
+        <div class="card promo-card">
+          <div class="discount-badge">-15% / -25%</div>
+          <h3>Приведи Душу в Ад</h3>
+          <p>Привёл друга — оба получают скидку. Ты −15% на следующую игру, он −25% на эту. Работает с каждым новым игроком. Бесконечно. И на шот, и на кампейн.</p>
+        </div>
+        <div class="card promo-card">
+          <div class="discount-badge">FREE</div>
+          <h3>Полный Отряд</h3>
+          <p>Собрал стол сам — все пять человек — твоё место бесплатно. Остальные платят стандарт. Ты молодец.</p>
+        </div>
+      </div>
+
+      <h3 class="promo-category-title"><span></span> Верные ветераны</h3>
+      <div class="grid" style="grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));">
+        <div class="card promo-card">
+          <div class="discount-badge">3 за 2.5</div>
+          <h3>Сезон Тьмы</h3>
+          <p>3 ваншота по цене 2.5. Для тех кто уже знает что это такое и хочет ещё.</p>
+        </div>
+        <div class="card promo-card">
+          <div class="discount-badge">-5%</div>
+          <h3>Летописец</h3>
+          <p>Написал пост или отзыв после игры — скидка 5% на следующий шот. Мне приятно, тебе выгодно.</p>
+        </div>
+      </div>
+
+      <h3 class="promo-category-title"><span></span> Заполнить стол</h3>
+      <div class="grid" style="grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));">
+        <div class="card promo-card">
+          <div class="discount-badge">-30%</div>
+          <h3>Последний Слот</h3>
+          <p>До игры 48 часов, одно место пустое — скидка 30%. Следишь за анонсами — выигрываешь.</p>
+        </div>
+        <div class="card promo-card">
+          <div class="discount-badge">-15%</div>
+          <h3>Ранняя Птица</h3>
+          <p>Записался за 7+ дней — скидка 15%. Тебе дешевле, мне спокойнее. Все счастливы.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section id="contact">
+    <div class="container">
+      <h2 class="section-title">📬 Связаться со мной</h2>
+      <div style="text-align:center; max-width:600px; margin:0 auto;">
+        <p style="color:var(--text-muted); margin-bottom:24px;">
+          Готовы начать приключение? Напишите мне — обсудим детали, подберём формат и дату!
+        </p>
+        <div class="contact-links">
+          <a href="https://t.me/Suhoe_DnD" class="telegram-link" target="_blank" rel="noopener noreferrer">
+            ✈️ @Suhoe_DnD — Telegram
+          </a>
+        </div>
+        <div style="margin-top:32px; padding:20px; background:var(--bg-card); border-radius:var(--radius); border:1px solid var(--border);">
+          <p style="margin-bottom:12px;"><strong>💡 При обращении укажите:</strong></p>
+          <ul style="text-align:left; color:var(--text-muted); padding-left:20px; font-size:0.95rem;">
+            <li>Желаемый набор (Ваншот / Кампания)</li>
+            <li>Количество игроков (если группа)</li>
+            <li>Опыт в НРИ</li>
+            <li>Удобные дни и время</li>
+          </ul>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <footer>
+    <div class="container">
+      <p>© 2026 Suhoe DnD | Участник CircleOfDms</p>
+      <p style="margin-top:8px; font-size:0.9rem;">Сайт создан с любовью к кубикам и приключениям ️✨</p>
+    </div>
+  </footer>
+
+  <script>
+    document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+      anchor.addEventListener('click', function(e) {
+        e.preventDefault();
+        const target = document.querySelector(this.getAttribute('href'));
+        if (target) target.scrollIntoView({ behavior: 'smooth', block: 'start' });
+      });
+    });
+  </script>
+</body>
+</html>
